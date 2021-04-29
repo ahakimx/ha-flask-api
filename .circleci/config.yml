@@ -38,6 +38,7 @@ jobs:
           . devops/bin/activate
           make lint 
 
+    - docker/check
     - docker/build:
         image: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
 
