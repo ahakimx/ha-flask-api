@@ -52,6 +52,8 @@ jobs:
           command: |
             echo "${DOCKER_PASSWORD}" | docker login -u ${DOCKER_USERNAME} --password-stdin
             docker build -t labola/flask-apps:${CIRCLE_WORKFLOW_ID:0:7} .
+            docker tag labola/flask-apps:${CIRCLE_WORKFLOW_ID:0:7} labola/flask-apps:latest
+            docker push labola/flask-apps:latest
 
 workflows:
   build-image:
