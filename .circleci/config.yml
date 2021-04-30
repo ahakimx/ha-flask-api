@@ -59,7 +59,7 @@ workflows:
   build-image:
     jobs:
       - build
-      - build-image:
+      - build-image-and-push:
           requires:
             - build
 
