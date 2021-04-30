@@ -50,8 +50,8 @@ jobs:
       - run:
           name: Build docker image
           command: |
-            docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
-            docker build -t labola/flask-apps:${CIRCLE_WORKFLOW_ID:0:7}
+            echo "${DOCKER_PASSWORD}" | docker login -u ${DOCKER_USERNAME} --password-stdin
+            docker build -t labola/flask-apps:${CIRCLE_WORKFLOW_ID:0:7} .
 
 workflows:
   build-image:
