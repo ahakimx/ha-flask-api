@@ -3,6 +3,10 @@
 # Check https://circleci.com/docs/2.0/language-python/ for more details
 #
 version: 2.1
+
+orbs:
+  docker: circleci/docker@1.5.0
+
 jobs:
   build:
     docker:
@@ -38,9 +42,17 @@ jobs:
           . devops/bin/activate
           make lint 
 
-    - docker/check
-    - docker/build:
-        image: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
+  build-image:
+    executor: docker/machine
+    steps:
+      - checkout
+      - docker/check
+      - docker/build:
+          image: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
 
-orbs:
-  docker: circleci/docker@1.5.0
+workflows:
+  build-image:
+    jobs:
+      - build
+      - build-image
+
