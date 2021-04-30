@@ -42,7 +42,7 @@ jobs:
           . devops/bin/activate
           make lint 
 
-  build-image:
+  build-image-and-push:
     working_directory: ~/project
     executor: docker/machine
     steps:
