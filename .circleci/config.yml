@@ -80,7 +80,7 @@ jobs:
           cluster-name: << parameters.cluster-name >>
       - kubernetes/create-or-update-resource:
           get-rollout-status: true
-          resource-file-path: deploy.yaml
+          resource-file-path: ./deploy.yaml
           resource-name: deployment/flaskapp
           show-kubectl-command: true
       - run:
