@@ -6,6 +6,7 @@ version: 2.1
 
 orbs:
   docker: circleci/docker@1.5.0
+  anchore: anchore/anchore-engine@1
   aws-eks: circleci/aws-eks@0.2.3
   kubernetes: circleci/kubernetes@0.11.2
 
@@ -46,16 +47,25 @@ jobs:
 
   build-image-and-push:
     working_directory: ~/project
-    executor: docker/machine
+    executor: anchore/anchore_engine
     steps:
+      - setup_remote_docker
       - checkout
       - run:
           name: Build docker image
           command: |
             echo "${DOCKER_PASSWORD}" | docker login -u ${DOCKER_USERNAME} --password-stdin
             docker build -t labola/flask-apps:${CIRCLE_WORKFLOW_ID:0:7} .
-            docker tag labola/flask-apps:${CIRCLE_WORKFLOW_ID:0:7} labola/flask-apps:latest
-            docker push labola/flask-apps:latest
+
+      - anchore/analyze_local_image:
+          dockerfile_path: ./Dockerfile
+          image_name: 'labola/flask-apps:${CIRCLE_WORKFLOW_ID:0:7}'
+          policy_bundle_file_path: .circleci/.anchore/policy_bundle.json
+          policy_failure: true
+          timeout: '500'
+      - anchore/parse_reports
+      - store_artifacts:
+          path: anchore-reports
 
   create-eks:
     executor: aws-eks/python3
