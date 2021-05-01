@@ -83,6 +83,8 @@ workflows:
             - build
       - aws-eks/create-cluster:
           cluster-name: ha-eks
+          requires:
+           - build-image-and-push
       - create-eks:
           cluster-name: ha-eks
           requires:
