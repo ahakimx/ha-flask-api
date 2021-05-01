@@ -6,7 +6,7 @@ version: 2.1
 
 orbs:
   docker: circleci/docker@1.5.0
-  anchore: anchore/anchore-engine@1
+  anchore: anchore/anchore-engine@1.8.6
   aws-eks: circleci/aws-eks@0.2.3
   kubernetes: circleci/kubernetes@0.11.2
 
