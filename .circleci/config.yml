@@ -11,7 +11,7 @@ orbs:
   kubernetes: circleci/kubernetes@0.11.2
 
 jobs:
-  build:
+  lint-code:
     docker:
     # Use the same Docker base as the project
     - image: python:3.7.3-stretch
@@ -66,8 +66,13 @@ jobs:
       - anchore/parse_reports
       - store_artifacts:
           path: anchore-reports
+      - run:
+          name: Push image to Repository
+          command: |
+            docker tag labola/flask-apps:${CIRCLE_WORKFLOW_ID:0:7} labola/flask-apps:latest
+            docker push labola/flask-apps:latest
 
-  create-eks:
+  deploy-apps:
     executor: aws-eks/python3
     parameters:
       cluster-name:
@@ -93,22 +98,17 @@ jobs:
             kubectl get services
 
 workflows:
-  build-image:
+  default:
     jobs:
-      - build
+      - lint-code
       - build-image-and-push:
           requires:
-            - build
+            - lint-code
       - aws-eks/create-cluster:
           cluster-name: ha-eks
           requires:
            - build-image-and-push
-      - create-eks:
+      - deploy-apps:
           cluster-name: ha-eks
           requires:
             - aws-eks/create-cluster
-              #     - aws-eks/delete-cluster:
-              #cluster-name: ha-eks
-              #requires:
-              #- create-eks
-

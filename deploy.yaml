@@ -5,7 +5,7 @@ metadata:
   labels:
     app: flask-app
 spec:
-  replicas: 3
+  replicas: 5
   selector:
     matchLabels:
       app: flask-app
@@ -20,7 +20,7 @@ spec:
         app: flask-app
     spec:
       containers:
-      - image: labola/flask-apps:v1
+      - image: labola/flask-apps:latest
         name: flask-app
         ports:
         - containerPort: 5000
