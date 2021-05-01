@@ -1,0 +1,43 @@
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: flask-app
+  labels:
+    app: flask-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: flask-app
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  template:
+    metadata:
+      labels:
+        app: flask-app
+    spec:
+      containers:
+              - image: labola/flask-apps:v1
+        name: flask-app
+        ports:
+        - containerPort: 5000
+          name: flask-app
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flaskservice
+  labels:
+    app: flask-app
+spec:
+  type: LoadBalancer
+  selector:
+    app: flask-app
+  ports:
+    - port: 80
+      targetPort: 5000
+      protocol: TCP
