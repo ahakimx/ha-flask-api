@@ -20,7 +20,7 @@ spec:
         app: flask-app
     spec:
       containers:
-              - image: labola/flask-apps:v1
+      - image: labola/flask-apps:v1
         name: flask-app
         ports:
         - containerPort: 5000
